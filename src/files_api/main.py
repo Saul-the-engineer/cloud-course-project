@@ -1,17 +1,17 @@
 """Create a FastAPI app."""
 
-import os
 
 from fastapi import FastAPI
 
 from files_api.routes import ROUTER
+from files_api.settings import Settings
 
 
-def create_app(s3_bucket_name: str = None) -> FastAPI:
+def create_app(settings: Settings | None) -> FastAPI:
     """Create a FastAPI app."""
-    s3_bucket_name = s3_bucket_name or os.getenv("S3_BUCKET_NAME")
+    settings = settings or Settings()
     app = FastAPI()
-    app.state.s3_bucket_name = s3_bucket_name
+    app.state.settings = settings
     app.include_router(ROUTER)
     return app
 
