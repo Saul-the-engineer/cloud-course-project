@@ -47,10 +47,10 @@ hw/
 - `DELETE /files/{filePath}`: Delete a file by its path.
 
 
-> 📌 **Design Note 1:** We are using PUT for both create and update options instead of POST because this API is atypical. In most REST APIs, the POST request accepts data, creates an object, and assigns it an ID. 
-> 
-> This is good because it's best not to allow users to have control over ID generation, e.g., to help ensure resource IDs are unique among other reasons. The fact that this is a file server makes our API a special case because it makes more sense for an API like this to have the URN be a file path rather than creating a separate URN, e.g., a UUID for each file. 
-> 
+> 📌 **Design Note 1:** We are using PUT for both create and update options instead of POST because this API is atypical. In most REST APIs, the POST request accepts data, creates an object, and assigns it an ID.
+>
+> This is good because it's best not to allow users to have control over ID generation, e.g., to help ensure resource IDs are unique among other reasons. The fact that this is a file server makes our API a special case because it makes more sense for an API like this to have the URN be a file path rather than creating a separate URN, e.g., a UUID for each file.
+>
 > File paths already guarantee uniqueness, the ability to look up the resource, etc. So in this case, we use a PUT for both create and update operations. The PUT verb assumes that the URN is known by the user. In our case, it is.
 
 > 📌 **Design Note 2:**

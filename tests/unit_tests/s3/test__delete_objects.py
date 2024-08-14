@@ -1,16 +1,9 @@
 """Testing the delete_objects module."""
 
 import boto3
-from moto import mock_aws
 
 from files_api.s3.delete_objects import delete_s3_object
-from files_api.s3.read_objects import object_exists_in_s3
-from files_api.s3.write_objects import upload_s3_object
-from tests.consts import (
-    TEST_BUCKET_NAME,
-    TEST_OBJECT_KEY,
-)
-from tests.unit_tests.s3.test__write_objects import test__upload_s3_object
+from tests.consts import TEST_BUCKET_NAME
 
 
 # pylint: disable=unused-argument

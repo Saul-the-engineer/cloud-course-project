@@ -4,7 +4,7 @@ import boto3
 from moto import mock_aws
 from pytest import fixture
 
-from files_api.main import S3_BUCKET_NAME as TEST_BUCKET_NAME
+from tests.consts import TEST_BUCKET_NAME
 
 
 def point_away_aws():
@@ -16,7 +16,7 @@ def point_away_aws():
 
 
 @fixture
-def mocked_aws() -> None:
+def mocked_aws():
     with mock_aws():
         point_away_aws()
 
