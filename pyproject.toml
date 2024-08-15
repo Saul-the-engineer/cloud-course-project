@@ -112,7 +112,6 @@ disable = [
     "trailing-whitespace",
     "missing-class-docstring",
     "missing-module-docstring",
-    "unused-argument",
     "invalid-name",
     "missing-function-docstring",
     "consider-using-f-string",
