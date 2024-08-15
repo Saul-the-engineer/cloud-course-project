@@ -3,6 +3,7 @@
 from fastapi import (
     APIRouter,
     Depends,
+    HTTPException,
     Request,
     Response,
     UploadFile,
@@ -79,6 +80,7 @@ async def list_files(
     else:
         files, next_page_token = fetch_s3_objects_metadata(
             bucket_name=settings.s3_bucket_name,
+            prefix=query_params.directory,
             max_keys=query_params.page_size,
         )
 
@@ -107,6 +109,12 @@ async def get_file_metadata(
     Note: by convention, HEAD requests MUST NOT return a body in the response.
     """
     settings = request.app.state.settings
+    object_exists = object_exists_in_s3(
+        bucket_name=request.app.state.settings.s3_bucket_name,
+        object_key=file_path,
+    )
+    if not object_exists:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
     get_object_response = fetch_s3_object(bucket_name=settings.s3_bucket_name, object_key=file_path)
     response.headers["Content-Type"] = get_object_response["ContentType"]
     response.headers["Content-Length"] = str(get_object_response["ContentLength"])
@@ -122,7 +130,17 @@ async def get_file(
 ) -> StreamingResponse:
     """Retrieve a file."""
     settings = request.app.state.settings
-    get_object_response = fetch_s3_object(bucket_name=settings.s3_bucket_name, object_key=file_path)
+    object_exists = object_exists_in_s3(
+        bucket_name=request.app.state.settings.s3_bucket_name,
+        object_key=file_path,
+    )
+    if not object_exists:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
+
+    get_object_response = fetch_s3_object(
+        bucket_name=settings.s3_bucket_name,
+        object_key=file_path,
+    )
     return StreamingResponse(
         content=get_object_response["Body"],
         media_type=get_object_response["ContentType"],
@@ -139,6 +157,12 @@ async def delete_file(
 
     NOTE: DELETE requests MUST NOT return a body in the response."""
     settings = request.app.state.settings
+    object_exists = object_exists_in_s3(
+        bucket_name=request.app.state.settings.s3_bucket_name,
+        object_key=file_path,
+    )
+    if not object_exists:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
     delete_s3_object(bucket_name=settings.s3_bucket_name, object_key=file_path)
     response.status_code = status.HTTP_204_NO_CONTENT
     return response

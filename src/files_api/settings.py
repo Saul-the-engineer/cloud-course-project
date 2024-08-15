@@ -1,8 +1,6 @@
 """Settings for the files API."""
 
-from pydantic import (
-    Field,
-)
+from pydantic import Field
 from pydantic_settings import (
     BaseSettings,
     SettingsConfigDict,

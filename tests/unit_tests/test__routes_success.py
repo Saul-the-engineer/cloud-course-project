@@ -1,26 +1,14 @@
+import stat
+
 import botocore
 import pytest
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from files_api import s3
-from files_api.main import create_app
-from files_api.settings import Settings
-from tests.consts import TEST_BUCKET_NAME
-
 # Constants for testing
 TEST_FILE_PATH = "test.txt"
 TEST_FILE_CONTENT = b"Hello, world!"
 TEST_FILE_CONTENT_TYPE = "text/plain"
-
-
-# Fixture for FastAPI test client
-@pytest.fixture
-def client(mocked_aws) -> TestClient:  # pylint: disable=unused-argument
-    settings = Settings(s3_bucket_name=TEST_BUCKET_NAME)
-    app = create_app(settings=settings)
-    with TestClient(app) as client:
-        yield client
 
 
 def test_upload_file(client: TestClient):
@@ -106,14 +94,8 @@ def test_delete_file(client: TestClient):
 
     # Delete file
     response = client.delete(f"/files/{TEST_FILE_PATH}")
-    assert response.status_code == 204
+    assert response.status_code == status.HTTP_204_NO_CONTENT
 
-    # Verify deletion
-    #
-    # NOTE: this is an anti-pattern. The tests should be unaware of the internal implementation details
-    # of the REST API. In this case, because the file is deleted from the S3 bucket, boto3 raises a NoSuchKey
-    # exception when trying to fetch the file. This block succeeds only if a botocore exception is thrown.
-    #
-    # Later we will fix this by doing better error handling within the API itself.
-    with pytest.raises(botocore.exceptions.ClientError):
-        response = client.get(f"/files/{TEST_FILE_PATH}")
+    # Ensure file is deleted
+    response = client.get(f"/files/{TEST_FILE_PATH}")
+    assert response.status_code == status.HTTP_404_NOT_FOUND
