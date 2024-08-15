@@ -22,10 +22,10 @@ version = { file = "version.txt" }
 
 # optional dependencies can be installed with square brackets, e.g. `pip install my-package[test,static-code-qa]`
 [project.optional-dependencies]
-api = ["uvicorn", "moto[server]", "httpx"]
+api = ["uvicorn", "moto[server]"]
 stubs = ["boto3-stubs[s3]"]
 notebookes = ["jupyterlab", "ipykernel", "rich"]
-test = ["pytest", "pytest-cov", "moto[s3]"]
+test = ["pytest", "pytest-cov", "httpx", "moto[s3]"]
 release = ["build", "twine"]
 static-code-qa = [
     "pre-commit",
