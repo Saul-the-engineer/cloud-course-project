@@ -104,7 +104,8 @@ async def get_file_metadata(
     file_path: str,
     response: Response,
 ) -> Response:
-    """Retrieve file metadata.
+    """
+    Retrieve file metadata.
 
     Note: by convention, HEAD requests MUST NOT return a body in the response.
     """
@@ -153,9 +154,11 @@ async def delete_file(
     file_path: str,
     response: Response,
 ) -> Response:
-    """Delete a file.
+    """
+    Delete a file.
 
-    NOTE: DELETE requests MUST NOT return a body in the response."""
+    NOTE: DELETE requests MUST NOT return a body in the response.
+    """
     settings = request.app.state.settings
     object_exists = object_exists_in_s3(
         bucket_name=request.app.state.settings.s3_bucket_name,

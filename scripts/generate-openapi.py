@@ -1,3 +1,5 @@
+"""Generate OpenAPI schema from FastAPI app and compare with existing schema."""
+
 # pylint: disable=invalid-name
 
 import argparse

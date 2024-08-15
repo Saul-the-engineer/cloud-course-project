@@ -8,7 +8,8 @@ from pydantic_settings import (
 
 
 class Settings(BaseSettings):
-    """Settings for the files API.
+    """
+    Settings for the files API.
 
     Pydantic BaseSettings docs: https://pydantic-settings.readthedocs.io/en/stable/api.html#pydantic_settings.BaseSettings
     FastAPI guide to managing settings: https://fastapi.tiangolo.com/advanced/settings/
