@@ -1,7 +1,3 @@
-import stat
-
-import botocore
-import pytest
 from fastapi import status
 from fastapi.testclient import TestClient
 
@@ -13,7 +9,7 @@ TEST_FILE_CONTENT_TYPE = "text/plain"
 
 def test_upload_file(client: TestClient):
     response = client.put(
-        f"/files/{TEST_FILE_PATH}",
+        f"/v1/files/{TEST_FILE_PATH}",
         files={
             "file": (
                 TEST_FILE_PATH,
@@ -32,7 +28,7 @@ def test_upload_file(client: TestClient):
     # update an existing file
     updated_content = b"updated content"
     response = client.put(
-        f"/files/{TEST_FILE_PATH}",
+        f"/v1/files/{TEST_FILE_PATH}",
         files={"file": (TEST_FILE_PATH, updated_content, TEST_FILE_CONTENT_TYPE)},
     )
 
@@ -47,11 +43,11 @@ def test_list_files_with_pagination(client: TestClient):
     # Upload files
     for i in range(15):
         client.put(
-            f"/files/file{i}.txt",
+            f"/v1/files/file{i}.txt",
             files={"file": (f"file{i}.txt", TEST_FILE_CONTENT, TEST_FILE_CONTENT_TYPE)},
         )
     # List files with page size 10
-    response = client.get("/files?page_size=10")
+    response = client.get("/v1/files?page_size=10")
     assert response.status_code == 200
     data = response.json()
     assert len(data["files"]) == 10
@@ -61,11 +57,11 @@ def test_list_files_with_pagination(client: TestClient):
 def test_get_file_metadata(client: TestClient):
     # Upload a file
     client.put(
-        f"/files/{TEST_FILE_PATH}",
+        f"/v1/files/{TEST_FILE_PATH}",
         files={"file": (TEST_FILE_PATH, TEST_FILE_CONTENT, TEST_FILE_CONTENT_TYPE)},
     )
     # Get file metadata
-    response = client.head(f"/files/{TEST_FILE_PATH}")
+    response = client.head(f"/v1/files/{TEST_FILE_PATH}")
     assert response.status_code == 200
     headers = response.headers
     assert headers["Content-Type"] == TEST_FILE_CONTENT_TYPE
@@ -76,11 +72,11 @@ def test_get_file_metadata(client: TestClient):
 def test_get_file(client: TestClient):
     # Upload a file
     client.put(
-        f"/files/{TEST_FILE_PATH}",
+        f"/v1/files/{TEST_FILE_PATH}",
         files={"file": (TEST_FILE_PATH, TEST_FILE_CONTENT, TEST_FILE_CONTENT_TYPE)},
     )
     # Get file
-    response = client.get(f"/files/{TEST_FILE_PATH}")
+    response = client.get(f"/v1/files/{TEST_FILE_PATH}")
     assert response.status_code == 200
     assert response.content == TEST_FILE_CONTENT
 
@@ -88,14 +84,14 @@ def test_get_file(client: TestClient):
 def test_delete_file(client: TestClient):
     # Upload a file
     client.put(
-        f"/files/{TEST_FILE_PATH}",
+        f"/v1/files/{TEST_FILE_PATH}",
         files={"file": (TEST_FILE_PATH, TEST_FILE_CONTENT, TEST_FILE_CONTENT_TYPE)},
     )
 
     # Delete file
-    response = client.delete(f"/files/{TEST_FILE_PATH}")
+    response = client.delete(f"/v1/files/{TEST_FILE_PATH}")
     assert response.status_code == status.HTTP_204_NO_CONTENT
 
     # Ensure file is deleted
-    response = client.get(f"/files/{TEST_FILE_PATH}")
+    response = client.get(f"/v1/files/{TEST_FILE_PATH}")
     assert response.status_code == status.HTTP_404_NOT_FOUND
