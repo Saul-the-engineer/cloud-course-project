@@ -7,6 +7,7 @@ from files_api.s3.write_objects import upload_s3_object
 from tests.consts import TEST_BUCKET_NAME
 
 
+# pylint: disable=unused-argument
 @mock_aws
 def test__upload_s3_object(mocked_aws: None) -> None:
     # upload a file to the bucket
